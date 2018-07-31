@@ -1,20 +1,22 @@
 import * as React from 'react';
 import './App.css';
+import { Book } from './Book'
 
 interface IState {
-  pages: string[]
+  book: Book | null
 }
 
 class App extends React.Component<any, IState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      pages: [""]
+      book: null
     }
   }
   public render() {
-    const pageHtml = this.state.pages.map((page, index) =>
-        <img key={page} src={page} className="Page Visible" />
+    if (this.state.book == null) { return("") }
+    const pageHtml = this.state.book.pages.map((page, index) =>
+        <img key={page.index} src={page.url} className={["Page", page.visible ? "Visible" : "Invisible"].join(' ')} />
     );
     return (
       <div className="Book">
@@ -24,6 +26,14 @@ class App extends React.Component<any, IState> {
   }
   public componentDidMount() {
     this.getPages()
+    document.addEventListener("keydown", (event) => {
+      this.onKey(event)
+    })
+  }
+  private onKey(e: Event) {
+    return (
+      <div />
+    )
   }
   private getPages() {
     fetch("http://localhost:3100/books/3499.json")
@@ -31,7 +41,7 @@ class App extends React.Component<any, IState> {
       .then(
         (result) => {
           this.setState({
-            pages: result.data
+            book: new Book(result.data)
           })
         }
       )
