@@ -69,7 +69,8 @@ class App extends React.Component<any, IState> {
   }
 
   private getPages() {
-    fetch("http://localhost:3100/books/3499.json")
+    const url = location.search.substring(1).split('&')[0].split("=")[1]
+    fetch(url)
       .then(res => res.json())
       .then(
         (result) => {
