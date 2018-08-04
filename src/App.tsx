@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './App.css';
 import { Book } from './Book'
+import PageComponent from './PageComponent';
 
 interface IState {
   book: Book | null
@@ -16,13 +17,14 @@ class App extends React.Component<any, IState> {
     }
   }
   public render() {
-    if (this.state.book == null) { return("") }
-    const pageHtml = this.state.book.pages.map((page, index) =>
-        <img key={page.index} src={page.url} className={["Page", page.visible ? "Visible" : "Invisible"].join(' ')} />
-    );
+    if (this.state.book == null) { return ("") }
+    const pages = this.state.book.pages.filter(
+      element => element.visible).map((page, index) =>
+        <PageComponent key={index} page={page} />
+      )
     return (
       <div className="Book">
-        {pageHtml}
+        {pages}
       </div>
     );
   }
@@ -34,34 +36,36 @@ class App extends React.Component<any, IState> {
   }
   private onKey(e: Event) {
     if (this.state.book == null) { return }
-    const result = this.nextPage()
-    this.setState({
-      book: result.newBook,
-      visiblePages: result.newVisilbePages
-    })
+    this.movePage()
   }
-  private nextPage() {
-    let newBook = this.state.book!
-    let newVisilbePages = this.state.visiblePages
-    if (newVisilbePages[1] + 1 >= newBook.pages.length) {
-      const result = this.goToFirst(newBook, newVisilbePages)
-      newBook = result.newBook
-      newVisilbePages = result.newVisilbePages
-    } else {
-      newBook.pages[newVisilbePages[0]].visible = false
-      newBook.pages[newVisilbePages[1] + 1].visible = true
-      newVisilbePages = [newVisilbePages[0] + 1, newVisilbePages[1] + 1]
-    }
-    return { newBook, newVisilbePages }
+  private movePage() {
+    this.goToNext()
   }
 
-  private goToFirst(newBook: Book, newVisilbePages: number[]) {
-      newBook.pages[newVisilbePages[0]].visible = false
-      newBook.pages[newVisilbePages[1]].visible = false
-      newBook.pages[0].visible = true
-      newBook.pages[1].visible = true
-      newVisilbePages = [0, 1]
-      return { newBook, newVisilbePages }
+  private goToNext() {
+    const newVisibles = []
+    const oldVisibles = this.state.visiblePages
+    if (this.state.visiblePages[0] + 1 >= this.state.book!.pages.length) {
+      newVisibles.push(0)
+    } else {
+      newVisibles.push(this.state.visiblePages[0] + 1)
+    }
+    if (this.state.visiblePages[1] + 1 >= this.state.book!.pages.length) {
+      newVisibles.push(0)
+    } else {
+      newVisibles.push(this.state.visiblePages[1] + 1)
+    }
+
+    this.state.book!.pages[oldVisibles[0]].visible = false
+    this.state.book!.pages[oldVisibles[1]].visible = false
+    this.state.book!.pages[newVisibles[0]].visible = true
+    this.state.book!.pages[newVisibles[1]].visible = true
+    this.state.book!.pages[newVisibles[0]].index = 1
+    this.state.book!.pages[newVisibles[1]].index = 2
+    this.setState({
+      book: this.state.book,
+      visiblePages: newVisibles
+    })
   }
 
   private getPages() {
