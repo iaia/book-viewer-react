@@ -68,8 +68,8 @@ class App extends React.Component<any, IState> {
     this.state.book!.pages[oldVisibles[1]].visible = false
     this.state.book!.pages[newVisibles[0]].visible = true
     this.state.book!.pages[newVisibles[1]].visible = true
-    this.state.book!.pages[newVisibles[0]].index = 1
-    this.state.book!.pages[newVisibles[1]].index = 2
+    this.state.book!.pages[newVisibles[0]].order = 1
+    this.state.book!.pages[newVisibles[1]].order = 2
     this.setState({
       book: this.state.book,
       visiblePages: newVisibles

@@ -14,7 +14,7 @@ class PageComponent extends React.Component<IPageProps, any> {
         return (
             <img src={this.props.page.url}
                 className={["Page", "Visible"].join(' ')}
-                style={{order: this.props.page.index}}
+                style={{order: this.props.page.order}}
             />
         )
     }
