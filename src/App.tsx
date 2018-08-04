@@ -45,8 +45,21 @@ class App extends React.Component<any, IState> {
         this.goToPrevious()
         break
       default:
-        break
+        return
     }
+  }
+
+  private changeVisibles(oldVisibles: number[], newVisibles: number[]) {
+    this.state.book!.pages[oldVisibles[0]].visible = false
+    this.state.book!.pages[oldVisibles[1]].visible = false
+    this.state.book!.pages[newVisibles[0]].visible = true
+    this.state.book!.pages[newVisibles[1]].visible = true
+    this.state.book!.pages[newVisibles[0]].index = 1
+    this.state.book!.pages[newVisibles[1]].index = 2
+    this.setState({
+      book: this.state.book,
+      visiblePages: newVisibles
+    })
   }
 
   private goToPrevious() {
@@ -62,17 +75,7 @@ class App extends React.Component<any, IState> {
     } else {
       newVisibles.push(this.state.visiblePages[1] - 1)
     }
-
-    this.state.book!.pages[oldVisibles[0]].visible = false
-    this.state.book!.pages[oldVisibles[1]].visible = false
-    this.state.book!.pages[newVisibles[0]].visible = true
-    this.state.book!.pages[newVisibles[1]].visible = true
-    this.state.book!.pages[newVisibles[0]].index = 1
-    this.state.book!.pages[newVisibles[1]].index = 2
-    this.setState({
-      book: this.state.book,
-      visiblePages: newVisibles
-    })
+    this.changeVisibles(oldVisibles, newVisibles)
   }
 
   private goToNext() {
@@ -88,17 +91,7 @@ class App extends React.Component<any, IState> {
     } else {
       newVisibles.push(this.state.visiblePages[1] + 1)
     }
-
-    this.state.book!.pages[oldVisibles[0]].visible = false
-    this.state.book!.pages[oldVisibles[1]].visible = false
-    this.state.book!.pages[newVisibles[0]].visible = true
-    this.state.book!.pages[newVisibles[1]].visible = true
-    this.state.book!.pages[newVisibles[0]].index = 1
-    this.state.book!.pages[newVisibles[1]].index = 2
-    this.setState({
-      book: this.state.book,
-      visiblePages: newVisibles
-    })
+    this.changeVisibles(oldVisibles, newVisibles)
   }
 
   private getPages() {
