@@ -34,12 +34,45 @@ class App extends React.Component<any, IState> {
       this.onKey(event)
     })
   }
-  private onKey(e: Event) {
+  private onKey(e: KeyboardEvent) {
     if (this.state.book == null) { return }
-    this.movePage()
+    const key = (e.shiftKey ? "S" : "") + e.key
+    switch(key) {
+      case " ":
+        this.goToNext()
+        break
+      case "S ":
+        this.goToPrevious()
+        break
+      default:
+        break
+    }
   }
-  private movePage() {
-    this.goToNext()
+
+  private goToPrevious() {
+    const newVisibles = []
+    const oldVisibles = this.state.visiblePages
+    if (this.state.visiblePages[0] - 1 < 0) {
+      newVisibles.push(this.state.book!.pages.length - 1)
+    } else {
+      newVisibles.push(this.state.visiblePages[0] - 1)
+    }
+    if (this.state.visiblePages[1] - 1 < 0) {
+      newVisibles.push(this.state.book!.pages.length - 1)
+    } else {
+      newVisibles.push(this.state.visiblePages[1] - 1)
+    }
+
+    this.state.book!.pages[oldVisibles[0]].visible = false
+    this.state.book!.pages[oldVisibles[1]].visible = false
+    this.state.book!.pages[newVisibles[0]].visible = true
+    this.state.book!.pages[newVisibles[1]].visible = true
+    this.state.book!.pages[newVisibles[0]].index = 1
+    this.state.book!.pages[newVisibles[1]].index = 2
+    this.setState({
+      book: this.state.book,
+      visiblePages: newVisibles
+    })
   }
 
   private goToNext() {
