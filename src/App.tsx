@@ -39,9 +39,23 @@ class App extends React.Component<any, IState> {
     const key = (e.shiftKey ? "S" : "") + e.key
     switch(key) {
       case " ":
+      case "j":
+      case "k":
+      case "h":
+      case "a":
+      case "s":
+      case "ArrowDown":
+      case "ArrowLeft":
         this.goToNext()
         break
       case "S ":
+      case "SJ":
+      case "SK":
+      case "l":
+      case "w":
+      case "d":
+      case "ArrowUp":
+      case "ArrowRight":
         this.goToPrevious()
         break
       default:
