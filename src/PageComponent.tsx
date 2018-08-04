@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Page } from './Page'
 
 interface IPageProps {
-    page: Page
+    page: Page,
+    onClickFunc: (index: number) => undefined
 }
 
 class PageComponent extends React.Component<IPageProps, any> {
@@ -15,6 +16,7 @@ class PageComponent extends React.Component<IPageProps, any> {
             <img src={this.props.page.url}
                 className={["Page", "Visible"].join(' ')}
                 style={{order: this.props.page.order}}
+                onClick={this.props.onClickFunc.bind(this, this.props.page.index)}
             />
         )
     }

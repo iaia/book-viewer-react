@@ -20,7 +20,7 @@ class App extends React.Component<any, IState> {
     if (this.state.book == null) { return ("") }
     const pages = this.state.book.pages.filter(
       element => element.visible).map((page, index) =>
-        <PageComponent key={index} page={page} />
+        <PageComponent key={index} page={page} onClickFunc={this.onClickFunc} />
       )
     return (
       <div className="Book">
@@ -33,6 +33,14 @@ class App extends React.Component<any, IState> {
     document.addEventListener("keydown", (event) => {
       this.onKey(event)
     })
+  }
+  private onClickFunc = (index: number) => {
+    if(index === this.state.visiblePages[0]) {
+      this.goToPrevious()
+    } else {
+      this.goToNext()
+    }
+    return undefined
   }
   private onKey(e: KeyboardEvent) {
     if (this.state.book == null) { return }
