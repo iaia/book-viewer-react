@@ -118,16 +118,23 @@ class App extends React.Component<any, IState> {
 
   private getPages() {
     const url = location.search.substring(1).split('&')[0].split("=")[1]
-    fetch(url)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            book: new Book(result.data),
-            visiblePages: [0, 1]
-          })
-        }
-      )
+    if (url === undefined) {
+      this.setState({
+        book: new Book(["/assets/sample/sample_double.png", "/assets/sample/sample1.png", "/assets/sample/sample2.png", "/assets/sample/sample3.png", "/assets/sample/sample4.png"]),
+        visiblePages: [0, 1]
+      })
+    } else {
+      fetch(url)
+        .then(res => res.json())
+        .then(
+          (result) => {
+            this.setState({
+              book: new Book(result.data),
+              visiblePages: [0, 1]
+            })
+          }
+        )
+    }
   }
 }
 
