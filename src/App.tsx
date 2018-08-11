@@ -13,27 +13,29 @@ class App extends React.Component<any, IState> {
     super(props);
     this.state = {
       book: null,
-      visiblePages: [0, 1]
+      visiblePages: [0, 1, 2]
     }
   }
+
   public render() {
-    if (this.state.book == null) { return ("") }
-    const pages = this.state.book.pages.filter(
-      element => element.visible).map((page, index) =>
-        <PageComponent key={index} page={page} onClickFunc={this.onClickFunc} />
-      )
+    if (this.state.book == null) { return "" }
+    const pages = [this.state.book.pages[this.state.visiblePages[0]], this.state.book.pages[this.state.visiblePages[1]], this.state.book.pages[this.state.visiblePages[2]]].map((page, index) =>
+      <PageComponent key={index} page={page} onClickFunc={this.onClickFunc} />
+    )
     return (
       <div className="Book">
         {pages}
       </div>
     );
   }
+
   public componentDidMount() {
     this.getPages()
     document.addEventListener("keydown", (event) => {
       this.onKey(event)
     })
   }
+
   private onClickFunc = (index: number) => {
     if(index === this.state.visiblePages[0]) {
       this.goToPrevious()
@@ -42,6 +44,7 @@ class App extends React.Component<any, IState> {
     }
     return undefined
   }
+
   private onKey(e: KeyboardEvent) {
     if (this.state.book == null) { return }
     const key = (e.shiftKey ? "S" : "") + e.key
@@ -74,10 +77,13 @@ class App extends React.Component<any, IState> {
   private changeVisibles(oldVisibles: number[], newVisibles: number[]) {
     this.state.book!.pages[oldVisibles[0]].visible = false
     this.state.book!.pages[oldVisibles[1]].visible = false
+    this.state.book!.pages[oldVisibles[2]].visible = false
     this.state.book!.pages[newVisibles[0]].visible = true
     this.state.book!.pages[newVisibles[1]].visible = true
+    this.state.book!.pages[newVisibles[2]].visible = false
     this.state.book!.pages[newVisibles[0]].order = 1
     this.state.book!.pages[newVisibles[1]].order = 2
+    this.state.book!.pages[newVisibles[2]].order = 3
     this.setState({
       book: this.state.book,
       visiblePages: newVisibles
@@ -97,6 +103,11 @@ class App extends React.Component<any, IState> {
     } else {
       newVisibles.push(this.state.visiblePages[1] - 1)
     }
+    if (this.state.visiblePages[2] - 1 < 0) {
+      newVisibles.push(this.state.book!.pages.length - 1)
+    } else {
+      newVisibles.push(this.state.visiblePages[2] - 1)
+    }
     this.changeVisibles(oldVisibles, newVisibles)
   }
 
@@ -113,28 +124,32 @@ class App extends React.Component<any, IState> {
     } else {
       newVisibles.push(this.state.visiblePages[1] + 1)
     }
+    if (this.state.visiblePages[2] + 1 >= this.state.book!.pages.length) {
+      newVisibles.push(0)
+    } else {
+      newVisibles.push(this.state.visiblePages[2] + 1)
+    }
     this.changeVisibles(oldVisibles, newVisibles)
   }
 
   private getPages() {
     const url = location.pathname
-    if (url === undefined) {
-      this.setState({
-        book: new Book(["/assets/sample/sample_double.png", "/assets/sample/sample1.png", "/assets/sample/sample2.png", "/assets/sample/sample3.png", "/assets/sample/sample4.png"]),
-        visiblePages: [0, 1]
-      })
-    } else {
-      fetch(url + '.json')
-        .then(res => res.json())
-        .then(
-          (result) => {
-            this.setState({
-              book: new Book(result.data),
-              visiblePages: [0, 1]
-            })
-          }
-        )
-    }
+    fetch(url + '.json')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            book: new Book(result.data),
+            visiblePages: [0, 1, 2]
+          })
+        }
+      )
+      .catch(error =>
+        this.setState({
+          book: new Book(["/assets/sample/sample_double.png", "/assets/sample/sample1.png", "/assets/sample/sample2.png", "/assets/sample/sample3.png", "/assets/sample/sample4.png"]),
+          visiblePages: [0, 1, 2]
+        })
+      )
   }
 }
 

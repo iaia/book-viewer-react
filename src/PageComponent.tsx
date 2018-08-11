@@ -14,7 +14,7 @@ class PageComponent extends React.Component<IPageProps, any> {
     public render() {
         return (
             <img src={this.props.page.url}
-                className={["Page", "Visible"].join(' ')}
+                className={["Page", this.props.page.visible ? "Visible" : "Invisible"].join(' ')}
                 style={{order: this.props.page.order}}
                 onClick={this.props.onClickFunc.bind(this, this.props.page.index)}
             />
