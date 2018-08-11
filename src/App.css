@@ -47,3 +47,6 @@ img.Page {
 img.Page.Visible {
   display: initial;
 }
+img.Page.Invisible {
+  display: none;
+}
