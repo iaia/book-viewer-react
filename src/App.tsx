@@ -13,13 +13,13 @@ class App extends React.Component<any, IState> {
     super(props);
     this.state = {
       book: null,
-      visiblePages: [0, 1, 2]
+      visiblePages: [0, 1, 2, 3]
     }
   }
 
   public render() {
     if (this.state.book == null) { return "" }
-    const pages = [this.state.book.pages[this.state.visiblePages[0]], this.state.book.pages[this.state.visiblePages[1]], this.state.book.pages[this.state.visiblePages[2]]].map((page, index) =>
+    const pages = [this.state.book.pages[this.state.visiblePages[0]], this.state.book.pages[this.state.visiblePages[1]], this.state.book.pages[this.state.visiblePages[2]], this.state.book.pages[this.state.visiblePages[3]]].map((page, index) =>
       <PageComponent key={index} page={page} onClickFunc={this.onClickFunc} />
     )
     return (
@@ -78,12 +78,15 @@ class App extends React.Component<any, IState> {
     this.state.book!.pages[oldVisibles[0]].visible = false
     this.state.book!.pages[oldVisibles[1]].visible = false
     this.state.book!.pages[oldVisibles[2]].visible = false
-    this.state.book!.pages[newVisibles[0]].visible = true
+    this.state.book!.pages[oldVisibles[3]].visible = false
+    this.state.book!.pages[newVisibles[0]].visible = false
     this.state.book!.pages[newVisibles[1]].visible = true
-    this.state.book!.pages[newVisibles[2]].visible = false
+    this.state.book!.pages[newVisibles[2]].visible = true
+    this.state.book!.pages[newVisibles[3]].visible = false
     this.state.book!.pages[newVisibles[0]].order = 1
     this.state.book!.pages[newVisibles[1]].order = 2
     this.state.book!.pages[newVisibles[2]].order = 3
+    this.state.book!.pages[newVisibles[3]].order = 4
     this.setState({
       book: this.state.book,
       visiblePages: newVisibles
@@ -108,6 +111,11 @@ class App extends React.Component<any, IState> {
     } else {
       newVisibles.push(this.state.visiblePages[2] - 1)
     }
+    if (this.state.visiblePages[3] - 1 < 0) {
+      newVisibles.push(this.state.book!.pages.length - 1)
+    } else {
+      newVisibles.push(this.state.visiblePages[3] - 1)
+    }
     this.changeVisibles(oldVisibles, newVisibles)
   }
 
@@ -129,6 +137,11 @@ class App extends React.Component<any, IState> {
     } else {
       newVisibles.push(this.state.visiblePages[2] + 1)
     }
+    if (this.state.visiblePages[3] + 1 >= this.state.book!.pages.length) {
+      newVisibles.push(0)
+    } else {
+      newVisibles.push(this.state.visiblePages[3] + 1)
+    }
     this.changeVisibles(oldVisibles, newVisibles)
   }
 
@@ -140,14 +153,14 @@ class App extends React.Component<any, IState> {
         (result) => {
           this.setState({
             book: new Book(result.data),
-            visiblePages: [0, 1, 2]
+            visiblePages: [0, 1, 2, 3]
           })
         }
       )
       .catch(error =>
         this.setState({
           book: new Book(["/assets/sample/sample_double.png", "/assets/sample/sample1.png", "/assets/sample/sample2.png", "/assets/sample/sample3.png", "/assets/sample/sample4.png"]),
-          visiblePages: [0, 1, 2]
+          visiblePages: [0, 1, 2, 3]
         })
       )
   }
