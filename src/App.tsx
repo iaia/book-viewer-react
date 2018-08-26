@@ -75,18 +75,13 @@ class App extends React.Component<any, IState> {
   }
 
   private changeVisibles(oldVisibles: number[], newVisibles: number[]) {
-    this.state.book!.pages[oldVisibles[0]].visible = false
-    this.state.book!.pages[oldVisibles[1]].visible = false
-    this.state.book!.pages[oldVisibles[2]].visible = false
-    this.state.book!.pages[oldVisibles[3]].visible = false
-    this.state.book!.pages[newVisibles[0]].visible = false
-    this.state.book!.pages[newVisibles[1]].visible = true
-    this.state.book!.pages[newVisibles[2]].visible = true
-    this.state.book!.pages[newVisibles[3]].visible = false
-    this.state.book!.pages[newVisibles[0]].order = 1
-    this.state.book!.pages[newVisibles[1]].order = 2
-    this.state.book!.pages[newVisibles[2]].order = 3
-    this.state.book!.pages[newVisibles[3]].order = 4
+    oldVisibles.forEach((old) => {
+      this.state.book!.pages[old].visible = false
+    })
+    newVisibles.forEach((newV, index) => {
+      this.state.book!.pages[newV].visible = index === 1 || index === 2
+      this.state.book!.pages[newV].order = index
+    })
     this.setState({
       book: this.state.book,
       visiblePages: newVisibles
@@ -94,54 +89,29 @@ class App extends React.Component<any, IState> {
   }
 
   private goToPrevious() {
-    const newVisibles = []
+    const newVisibles: number[] = []
     const oldVisibles = this.state.visiblePages
-    if (this.state.visiblePages[0] - 1 < 0) {
-      newVisibles.push(this.state.book!.pages.length - 1)
-    } else {
-      newVisibles.push(this.state.visiblePages[0] - 1)
-    }
-    if (this.state.visiblePages[1] - 1 < 0) {
-      newVisibles.push(this.state.book!.pages.length - 1)
-    } else {
-      newVisibles.push(this.state.visiblePages[1] - 1)
-    }
-    if (this.state.visiblePages[2] - 1 < 0) {
-      newVisibles.push(this.state.book!.pages.length - 1)
-    } else {
-      newVisibles.push(this.state.visiblePages[2] - 1)
-    }
-    if (this.state.visiblePages[3] - 1 < 0) {
-      newVisibles.push(this.state.book!.pages.length - 1)
-    } else {
-      newVisibles.push(this.state.visiblePages[3] - 1)
-    }
+    this.state.visiblePages.forEach((item) => {
+      if (item - 1 < 0) {
+        newVisibles.push(this.state.book!.pages.length - 1)
+      } else {
+        newVisibles.push(item - 1)
+      }
+    })
+
     this.changeVisibles(oldVisibles, newVisibles)
   }
 
   private goToNext() {
-    const newVisibles = []
+    const newVisibles: number[] = []
     const oldVisibles = this.state.visiblePages
-    if (this.state.visiblePages[0] + 1 >= this.state.book!.pages.length) {
-      newVisibles.push(0)
-    } else {
-      newVisibles.push(this.state.visiblePages[0] + 1)
-    }
-    if (this.state.visiblePages[1] + 1 >= this.state.book!.pages.length) {
-      newVisibles.push(0)
-    } else {
-      newVisibles.push(this.state.visiblePages[1] + 1)
-    }
-    if (this.state.visiblePages[2] + 1 >= this.state.book!.pages.length) {
-      newVisibles.push(0)
-    } else {
-      newVisibles.push(this.state.visiblePages[2] + 1)
-    }
-    if (this.state.visiblePages[3] + 1 >= this.state.book!.pages.length) {
-      newVisibles.push(0)
-    } else {
-      newVisibles.push(this.state.visiblePages[3] + 1)
-    }
+    this.state.visiblePages.forEach((item) => {
+      if (item + 1 >= this.state.book!.pages.length) {
+        newVisibles.push(0)
+      } else {
+        newVisibles.push(item + 1)
+      }
+    })
     this.changeVisibles(oldVisibles, newVisibles)
   }
 
